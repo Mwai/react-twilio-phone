@@ -4,6 +4,9 @@ const bodyParser = require("body-parser");
 const pino = require("express-pino-logger")();
 const { chatToken, videoToken, voiceToken } = require("./tokens");
 const { VoiceResponse } = require("twilio").twiml;
+const callerIDString = config.twilio.callerId;
+
+let currentCallerID;
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -17,6 +20,17 @@ const sendTokenResponse = (token, res) => {
       token: token.toJwt()
     })
   );
+};
+
+const getAllCallerIds = async () => {
+  const twilio = require("twilio")(config.twilio.accountSid, config.twilio.authToken);
+  try {
+    const callerIds = await twilio.outgoingCallerIds.list();
+    return callerIds.map(callerId => callerId.phoneNumber);
+  } catch (error) {
+    console.error("Error fetching caller IDs:", error);
+    return [];
+  }
 };
 
 app.get("/api/greeting", (req, res) => {
@@ -66,7 +80,9 @@ app.post("/voice/token", (req, res) => {
 app.post("/voice", (req, res) => {
   const To = req.body.To;
   const response = new VoiceResponse();
-  const dial = response.dial({ callerId: config.twilio.callerId });
+  const callerIDArray = callerIDString.split(",");
+  const currentId = currentCallerID || callerIDArray[0];
+  const dial = response.dial({ callerId: currentId});
   dial.number(To);
   res.set("Content-Type", "text/xml");
   res.send(response.toString());
@@ -78,6 +94,27 @@ app.post("/voice/incoming", (req, res) => {
   dial.client("phil");
   res.set("Content-Type", "text/xml");
   res.send(response.toString());
+});
+app.get('/caller-ids', (req, res) => {
+  const callerIDArray = callerIDString.split(",");
+  res.json({ callerIDs: callerIDArray });
+});
+
+// POST route to set the current caller ID
+app.post('/set-current-caller-id', (req, res) => {
+  const { callerID } = req.body;
+  const callerIDArray = callerIDString.split(",");
+  if (callerID && callerIDArray.includes(callerID)) {
+    currentCallerID = callerID;
+    res.json({ message: 'Current caller ID set successfully' });
+  } else {
+    res.status(400).json({ error: 'Invalid caller ID' });
+  }
+});
+
+// GET route to fetch the current caller ID
+app.get('/current-caller-id', (req, res) => {
+  res.json({ currentCallerID });
 });
 
 app.listen(3001, () =>

@@ -5,12 +5,16 @@
 }
 header,
 footer {
-  background: #36d576;
+  background: #3b82f6;
   color: #fff;
   text-align: center;
 }
 main {
+  padding-top: 60px;
+  display: flex;
   flex-grow: 1;
+  align-items: center;
+  flex-direction: column;
 }
 footer a {
   color: #fff;

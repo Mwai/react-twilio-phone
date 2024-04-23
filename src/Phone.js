@@ -6,7 +6,7 @@ import Incoming from "./Incoming";
 import OnCall from "./OnCall";
 import "./Phone.css";
 import states from "./states";
-import FakeState from "./FakeState";
+// import FakeState from "./FakeState";
 
 const Phone = ({ token }) => {
   const [state, setState] = useState(states.CONNECTING);
@@ -57,7 +57,8 @@ const Phone = ({ token }) => {
   }, [token]);
 
   const handleCall = () => {
-    device.connect({ To: number });
+    const keNumber = `+254${number}`
+    device.connect({ To: keNumber });
   };
 
   const handleHangup = () => {
@@ -85,11 +86,11 @@ const Phone = ({ token }) => {
   }
   return (
     <>
-      <FakeState
+      {/* <FakeState
         currentState={state}
         setState={setState}
         setConn={setConn}
-      ></FakeState>
+      ></FakeState> */}
       {render}
       <p className="status">{state}</p>
     </>

@@ -5,7 +5,7 @@ import Phone from "./Phone";
 const App = () => {
   const [token, setToken] = useState(null);
   const [clicked, setClicked] = useState(false);
-  const identity = "phil";
+  const identity = "WebTestPhone";
 
   const handleClick = () => {
     setClicked(true);
@@ -17,18 +17,17 @@ const App = () => {
   return (
     <div className="app">
       <header className="App-header">
-        <h1>React &amp; Twilio Phone</h1>
+        <h1>Web Dialer</h1>
       </header>
 
       <main>
         {!clicked && <button onClick={handleClick}>Connect to Phone</button>}
 
-        {token ? <Phone token={token}></Phone> : <p>Loading...</p>}
+        {token ? <Phone token={token}></Phone> : <p>...</p>}
       </main>
 
       <footer>
         <p>
-          Built on Twitch by <a href="https://twitch.tv/phil_nash">phil_nash</a>
         </p>
       </footer>
     </div>
