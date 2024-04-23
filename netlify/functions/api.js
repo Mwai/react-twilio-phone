@@ -1,6 +1,8 @@
 const config = require("./config");
 const express = require("express");
+const serverless = require("serverless-http");
 const bodyParser = require("body-parser");
+const router = express.Router();
 const pino = require("express-pino-logger")();
 const { chatToken, videoToken, voiceToken } = require("./tokens");
 const { VoiceResponse } = require("twilio").twiml;
@@ -33,51 +35,51 @@ const getAllCallerIds = async () => {
   }
 };
 
-app.get("/api/greeting", (req, res) => {
+router.get("/api/greeting", (req, res) => {
   const name = req.query.name || "World";
   res.setHeader("Content-Type", "application/json");
   res.send(JSON.stringify({ greeting: `Hello ${name}!` }));
 });
 
-app.get("/chat/token", (req, res) => {
+router.get("/chat/token", (req, res) => {
   const identity = req.query.identity;
   const token = chatToken(identity, config);
   sendTokenResponse(token, res);
 });
 
-app.post("/chat/token", (req, res) => {
+router.post("/chat/token", (req, res) => {
   const identity = req.body.identity;
   const token = chatToken(identity, config);
   sendTokenResponse(token, res);
 });
 
-app.get("/video/token", (req, res) => {
+router.get("/video/token", (req, res) => {
   const identity = req.query.identity;
   const room = req.query.room;
   const token = videoToken(identity, room, config);
   sendTokenResponse(token, res);
 });
 
-app.post("/video/token", (req, res) => {
+router.post("/video/token", (req, res) => {
   const identity = req.body.identity;
   const room = req.body.room;
   const token = videoToken(identity, room, config);
   sendTokenResponse(token, res);
 });
 
-app.get("/voice/token", (req, res) => {
+router.get("/voice/token", (req, res) => {
   const identity = req.query.identity;
   const token = voiceToken(identity, config);
   sendTokenResponse(token, res);
 });
 
-app.post("/voice/token", (req, res) => {
+router.post("/voice/token", (req, res) => {
   const identity = req.body.identity;
   const token = voiceToken(identity, config);
   sendTokenResponse(token, res);
 });
 
-app.post("/voice", (req, res) => {
+router.post("/voice", (req, res) => {
   const To = req.body.To;
   const response = new VoiceResponse();
   const callerIDArray = callerIDString.split(",");
@@ -88,20 +90,20 @@ app.post("/voice", (req, res) => {
   res.send(response.toString());
 });
 
-app.post("/voice/incoming", (req, res) => {
+router.post("/voice/incoming", (req, res) => {
   const response = new VoiceResponse();
   const dial = response.dial({ callerId: req.body.From, answerOnBridge: true });
   dial.client("phil");
   res.set("Content-Type", "text/xml");
   res.send(response.toString());
 });
-app.get('/caller-ids', (req, res) => {
+router.get('/caller-ids', (req, res) => {
   const callerIDArray = callerIDString.split(",");
   res.json({ callerIDs: callerIDArray });
 });
 
 // POST route to set the current caller ID
-app.post('/set-current-caller-id', (req, res) => {
+router.post('/set-current-caller-id', (req, res) => {
   const { callerID } = req.body;
   const callerIDArray = callerIDString.split(",");
   if (callerID && callerIDArray.includes(callerID)) {
@@ -113,10 +115,13 @@ app.post('/set-current-caller-id', (req, res) => {
 });
 
 // GET route to fetch the current caller ID
-app.get('/current-caller-id', (req, res) => {
+router.get('/current-caller-id', (req, res) => {
   res.json({ currentCallerID });
 });
 
-app.listen(3001, () =>
-  console.log("Express server is running on localhost:3001")
-);
+app.use(`/.netlify/functions/api`, router);
+
+module.exports.handler = serverless(app);
+// app.listen(3001, () =>
+//   console.log("Express server is running on localhost:3001")
+// );

@@ -3,10 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "babel": "^6.23.0",
     "meyda": "^4.3.1",
+    "netlify-lambda": "^2.0.16",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "react-scripts": "^5.0.1",
+    "serverless-http": "^3.2.0",
     "twilio-client": "^1.10.0",
     "util": "^0.12.5"
   },
@@ -16,7 +19,10 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "server": "node-env-run server --exec nodemon | pino-colada",
-    "dev": "run-p server start"
+    "dev": "run-p server start",
+    "build-netlify": "netlify build",
+    "deploy": "netlify deploy --prod",
+    "dev-netlify": "netlify dev"
   },
   "proxy": "http://localhost:3001",
   "eslintConfig": {

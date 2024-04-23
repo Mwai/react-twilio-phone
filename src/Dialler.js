@@ -13,7 +13,7 @@ const Dialler = ({ number, setNumber }) => {
 
   const fetchCallerIds = async () => {
     try {
-      const response = await fetch("/caller-ids"); // Assuming your Express server is running on the same host
+      const response = await fetch("/.netlify/functions/api/caller-ids"); // Assuming your Express server is running on the same host
       const data = await response.json();
       setCallerIdArray(data.callerIDs);
     } catch (error) {
@@ -28,7 +28,7 @@ const Dialler = ({ number, setNumber }) => {
 
   const setCurrentCallerId = async (callerID) => {
     try {
-      const response = await fetch("/set-current-caller-id", {
+      const response = await fetch("/.netlify/functions/api/set-current-caller-id", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
