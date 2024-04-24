@@ -84,7 +84,7 @@ router.post("/voice", (req, res) => {
   const response = new VoiceResponse();
   const callerIDArray = callerIDString.split(",");
   const currentId = currentCallerID || callerIDArray[0];
-  const dial = response.dial({ callerId: currentId});
+  const dial = response.dial({ callerId: currentId, record: 'record-from-ringing'});
   dial.number(To);
   res.set("Content-Type", "text/xml");
   res.send(response.toString());
@@ -92,7 +92,7 @@ router.post("/voice", (req, res) => {
 
 router.post("/voice/incoming", (req, res) => {
   const response = new VoiceResponse();
-  const dial = response.dial({ callerId: req.body.From, answerOnBridge: true });
+  const dial = response.dial({ callerId: req.body.From, answerOnBridge: true, record: 'record-from-ringing' });
   dial.client("phil");
   res.set("Content-Type", "text/xml");
   res.send(response.toString());
