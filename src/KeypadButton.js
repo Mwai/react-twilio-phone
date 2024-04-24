@@ -1,9 +1,9 @@
 import React from "react";
 import "./KeypadButton.css";
 
-const KeypadButton = ({ children, handleClick, color = "" }) => {
+const KeypadButton = ({ children, handleClick, color = "", disabled }) => {
   return (
-    <button className={`keypad-button ${color}`} onClick={handleClick}>
+    <button disabled={!disabled} className={`keypad-button ${color}`} onClick={handleClick}>
       {children}
     </button>
   );

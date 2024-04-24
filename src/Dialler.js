@@ -2,8 +2,7 @@ import React,  { useState, useEffect } from "react";
 import "./Dialler.css";
 import KeypadButton from "./KeypadButton";
 
-const Dialler = ({ number, setNumber }) => {
-  const [selectedCallerId, setSelectedCallerId] = useState("");
+const Dialler = ({ number, setNumber, selectedCallerId, setSelectedCallerId }) => {
   const [callerIdArray, setCallerIdArray] = useState([]);
 
   useEffect(() => {
@@ -58,30 +57,38 @@ const Dialler = ({ number, setNumber }) => {
 
   return (
     <>
-      <div>
-        <label htmlFor="callerIds">Select a Caller ID:</label>
-        <select
-          id="callerIds"
-          value={selectedCallerId}
-          onChange={handleCallerIDChange}
-        >
-          {callerIdArray.map((phoneNumber, index) => (
-            <option key={index} value={phoneNumber}>
-              {phoneNumber}
-            </option>
-          ))}
-        </select>
-      </div>
-      <div className="input-container">
-        <span className="icon">+254</span>
-        <input
-          type="tel"
-          value={number}
-          onChange={handleNumberChange}
-          className="input"
-          placeholder="712345678"
-        />
-      </div>
+      {!selectedCallerId && (
+        <div>
+          <select
+            className="custom-select"
+            id="callerIds"
+            value={selectedCallerId}
+            onChange={handleCallerIDChange}
+          >
+            <option>Select Caller ID</option>
+            {callerIdArray.map((phoneNumber, index) => (
+              <option key={index} value={phoneNumber}>
+                {phoneNumber}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
+      {selectedCallerId && (
+        <>
+          <p>Caller ID: {selectedCallerId}</p>
+          <div className="input-container">
+            <span className="icon">+254</span>
+            <input
+              type="tel"
+              value={number}
+              onChange={handleNumberChange}
+              className="input"
+              placeholder="712345678"
+            />
+          </div>
+        </>
+      )}
       {/* <ol className="keypad">
         <li>
           <KeypadButton handleClick={handleNumberPressed("1")}>1</KeypadButton>

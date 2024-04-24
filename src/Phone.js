@@ -13,6 +13,7 @@ const Phone = ({ token }) => {
   const [number, setNumber] = useState("");
   const [conn, setConn] = useState(null);
   const [device, setDevice] = useState(null);
+  const [selectedCallerId, setSelectedCallerId] = useState("");
 
   useEffect(() => {
     const device = new Device();
@@ -56,7 +57,12 @@ const Phone = ({ token }) => {
     };
   }, [token]);
 
+  useEffect(() => {
+    isNumberValid()
+  }, [number]);
+
   const handleCall = () => {
+    setState(states.CONNECTING)
     const keNumber = `+254${number}`
     device.connect({ To: keNumber });
   };
@@ -64,6 +70,13 @@ const Phone = ({ token }) => {
   const handleHangup = () => {
     device.disconnectAll();
   };
+  const isNumberValid = () => {
+    // Regular expression to match Kenyan phone numbers
+    const kenyanPhoneNumberRegex = /^(?:\+?254|0)(?:\d{9}|7(?:[0-6]\d{7}|7[7-9]\d{6}))$/;
+    const keNumber = `+254${number}`
+    // Test the input phone number against the regular expression
+    return kenyanPhoneNumberRegex.test(keNumber);
+  }
 
   let render;
   if (conn) {
@@ -75,12 +88,18 @@ const Phone = ({ token }) => {
   } else {
     render = (
       <>
-        <Dialler number={number} setNumber={setNumber}></Dialler>
-        <div className="call">
-          <KeypadButton handleClick={handleCall} color="green">
-            Call
-          </KeypadButton>
-        </div>
+        <Dialler number={number} 
+        setNumber={setNumber} 
+        selectedCallerId={selectedCallerId} 
+        setSelectedCallerId={setSelectedCallerId}
+        ></Dialler>
+        {selectedCallerId && state === states.READY && (
+          <div className="call">
+            <KeypadButton handleClick={handleCall} disabled={isNumberValid()} color="green">
+              Call 
+            </KeypadButton>
+          </div>
+        )}
       </>
     );
   }

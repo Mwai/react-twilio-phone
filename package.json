@@ -21,7 +21,7 @@
     "server": "node-env-run server --exec nodemon | pino-colada",
     "dev": "run-p server start",
     "build-netlify": "netlify build",
-    "deploy": "netlify deploy --prod",
+    "deploy": "netlify build && netlify deploy --prod",
     "dev-netlify": "netlify dev"
   },
   "proxy": "http://localhost:3001",

@@ -9,8 +9,10 @@ const Incoming = ({ connection, device }) => {
   };
   return (
     <>
-      <button onClick={acceptConnection}>Accept</button>
-      <button onClick={rejectConnection}>Reject</button>
+      <div className="call-options">
+        <button className="keypad-button" onClick={acceptConnection}>Accept</button>
+      </div>
+      <button className="keypad-button red" onClick={rejectConnection}>Reject</button>
     </>
   );
 };
