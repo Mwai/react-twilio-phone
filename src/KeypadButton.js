@@ -3,7 +3,7 @@ import "./KeypadButton.css";
 
 const KeypadButton = ({ children, handleClick, color = "", disabled }) => {
   return (
-    <button disabled={!disabled} className={`keypad-button ${color}`} onClick={handleClick}>
+    <button disabled={disabled} className={`keypad-button ${color}`} onClick={handleClick}>
       {children}
     </button>
   );

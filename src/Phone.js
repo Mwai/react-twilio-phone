@@ -95,7 +95,7 @@ const Phone = ({ token }) => {
         ></Dialler>
         {selectedCallerId && state === states.READY && (
           <div className="call">
-            <KeypadButton handleClick={handleCall} disabled={isNumberValid()} color="green">
+            <KeypadButton handleClick={handleCall} disabled={!isNumberValid()} color="green">
               Call 
             </KeypadButton>
           </div>
