@@ -8,12 +8,11 @@ import "./Phone.css";
 import states from "./states";
 // import FakeState from "./FakeState";
 
-const Phone = ({ token }) => {
+const Phone = ({ token, selectedCallerId }) => {
   const [state, setState] = useState(states.CONNECTING);
   const [number, setNumber] = useState("");
   const [conn, setConn] = useState(null);
   const [device, setDevice] = useState(null);
-  const [selectedCallerId, setSelectedCallerId] = useState("");
 
   useEffect(() => {
     const device = new Device();
@@ -91,7 +90,6 @@ const Phone = ({ token }) => {
         <Dialler number={number} 
         setNumber={setNumber} 
         selectedCallerId={selectedCallerId} 
-        setSelectedCallerId={setSelectedCallerId}
         ></Dialler>
         {selectedCallerId && state === states.READY && (
           <div className="call">

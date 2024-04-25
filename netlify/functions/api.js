@@ -92,8 +92,10 @@ router.post("/voice", (req, res) => {
 
 router.post("/voice/incoming", (req, res) => {
   const response = new VoiceResponse();
-  const dial = response.dial({ callerId: req.body.From, answerOnBridge: true, record: 'record-from-ringing' });
-  dial.client("phil");
+  const callerID = req.body.From;
+  const dial = response.dial({ callerId: callerID, answerOnBridge: true, record: 'record-from-ringing' });
+  const clientName = `webDialer${callerID}`;
+  dial.client(clientName);
   res.set("Content-Type", "text/xml");
   res.send(response.toString());
 });
